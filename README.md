@@ -10,9 +10,7 @@ The server doesnt handle side-effects, this is handled by the client only if nec
 
 The server handles the canvas in memory lazily through Streams Operations, its only sended to the client the lines that was previously painted, this way the whole Matrix is processed only when needed
 
-
 ## Running
----
 
 ### Locally
 
@@ -29,6 +27,8 @@ Running will:
 - Or you can add through `iex` running ```Ascii.Canvas.new_rect/6```
 - To change canvas size dinamically though server use: `Ascii.Canvas.reset(width, height)`
 
-## Testing
+## Possible improvements
 
-`mix test`
+- Persisting canvas in a AP database (like AntidoteDB) instead of in-memory
+- Make a real front-end
+- Add AsciiWeb tests
