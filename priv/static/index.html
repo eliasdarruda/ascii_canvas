@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <script type="text/javascript">
+      window.fullCanvas = []
+
+			function ready() {
+        setupSSE();
+			}
+
+			function setupSSE() {
+				const source = new EventSource('/sse');
+
+				source.addEventListener('message', function(event) {
+					const data = JSON.parse(event.data)
+
+          if (data.new_line) {
+            window.fullCanvas[data.new_line.number] = data.new_line.content
+          }
+
+          drawCanvas([...window.fullCanvas])
+        }, false);
+
+        source.addEventListener('open', function(event) {
+          console.log('SSE connected')
+
+          clearCanvas()
+        }, false);
+
+        source.addEventListener('error', function(event) {
+          if (event.eventPhase == EventSource.CLOSED) {
+            console.log('SSE was closed')
+
+            clearCanvas()
+          }
+        }, false);
+			}
+
+      function drawCanvas(canvas) {
+        const canvasElem = document.getElementById('canvas-setup')
+        canvasElem.innerText = ''
+
+        const result = canvas.reduce((acc, line) => {
+          const charset = String.fromCharCode(...line)
+
+          return acc + charset + '\n'
+        }, canvasElem.innerText)
+
+        canvasElem.innerText = result
+      }
+
+      function clearCanvas() {
+        window.fullCanvas = []
+        document.getElementById('canvas-setup').innerText = ''
+      }
+
+      async function addRect(_event) {
+        const input = document.getElementById('rect-add')
+
+        const req = await fetch(`/new_rect?value=${input.value}`)
+        const result = await req.text()
+
+        if (result == 'OK') {
+          input.value = ''
+          input.focus()
+        }
+      }
+		</script>
+	</head>
+	<body onload="ready();" style="font-family: 'Press Start 2P';background: black;color: #ddd;text-align:center;">
+    <h1>ASCII Canvas</h1>
+
+    <span>to add a new rect, write the input in the current format (using semicolons)<br/><br/><b>x;y;width;height;OUTLINE;FILL</b></span>
+    <br/>
+    <br/>
+
+    <input type="text" id="rect-add" style="
+    background: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 10px;
+    font-family: 'Press Start 2P';" autofocus>
+
+    <button onclick="addRect()" style="
+    border: 1px solid white;
+    background-color: transparent;
+    font-family: 'Press Start 2P';
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    ">Add Rect</button>
+
+    <br/>
+		<pre id="canvas-setup" style="
+    font-family: 'Press Start 2P';
+    line-height: 22px;
+    letter-spacing: 4.8px;
+    display: inline-flex;
+    border: 1px solid #ddd"></pre>
+	</body>
+</html>
