@@ -18,7 +18,7 @@ defmodule Ascii.Application do
     ]
 
     opts = [strategy: :one_for_one, name: Ascii.Supervisor]
-    Logger.info "Server listening on port #{@cowboy_options[:port]}"
+    Logger.debug "Server listening on port #{@cowboy_options[:port]}"
     Supervisor.start_link(children, opts)
   end
 end

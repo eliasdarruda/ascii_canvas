@@ -1,5 +1,3 @@
 defmodule Ascii do
-  @moduledoc """
-  Documentation for `Ascii`.
-  """
+  @moduledoc false
 end

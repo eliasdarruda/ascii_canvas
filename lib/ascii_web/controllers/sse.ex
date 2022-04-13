@@ -1,4 +1,11 @@
 defmodule AsciiWeb.Controllers.SSE do
+  @moduledoc """
+  This is the Server Sent Events (SSE) Controller, this handle the client side Read-Only communication
+
+  Every Request that you connect to, you join to the Canvas Server and listen to its events,
+  with that you can send chunks of the Canvas Stream to the client using the same connection
+  """
+
   import Plug.Conn
 
   def init(args), do: args
@@ -19,11 +26,18 @@ defmodule AsciiWeb.Controllers.SSE do
         sliced_canvas_lines =
           canvas_stream
           |> Stream.with_index()
-          |> Enum.slice(rect.y..(rect.y + rect.height - 1))
+          |> Enum.slice(rect.y..(rect.y + rect.height))
 
         send_canvas_stream(conn, sliced_canvas_lines)
 
         listen_for_events(conn)
+
+      {:reset, canvas_stream} ->
+        {:ok, conn} = send_message(conn, %{reset: true})
+
+        conn
+        |> send_canvas_stream(Stream.with_index(canvas_stream))
+        |> listen_for_events()
     end
   end
 

@@ -18,6 +18,10 @@
 				source.addEventListener('message', function(event) {
 					const data = JSON.parse(event.data)
 
+           if (data.reset) {
+            clearCanvas()
+          }
+
           if (data.new_line) {
             window.fullCanvas[data.new_line.number] = data.new_line.content
           }
@@ -56,12 +60,15 @@
       function clearCanvas() {
         window.fullCanvas = []
         document.getElementById('canvas-setup').innerText = ''
+        document.getElementById('canvas-setup').innerHTML = ''
       }
 
       async function addRect(_event) {
         const input = document.getElementById('rect-add')
 
-        const req = await fetch(`/new_rect?value=${input.value}`)
+        if (!input.value) return;
+
+        const req = await fetch(`/new_rect?value=${btoa(input.value)}`)
         const result = await req.text()
 
         if (result == 'OK') {

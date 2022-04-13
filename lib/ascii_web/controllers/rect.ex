@@ -1,4 +1,8 @@
 defmodule AsciiWeb.Controllers.Rect do
+  @moduledoc """
+  This is the Rect Controller, this just handles adding new rects in the most naive way possible
+  """
+
   import Plug.Conn
 
   def init(args), do: args
@@ -6,7 +10,7 @@ defmodule AsciiWeb.Controllers.Rect do
   def call(conn, _data) do
     %{query_params: %{"value" => rect_params}} = fetch_query_params(conn)
 
-    [x, y, width, height, outline, fill] = String.split(rect_params, ";")
+    [x, y, width, height, outline, fill] = rect_params |> Base.url_decode64! |> String.split(";")
 
     Ascii.Canvas.new_rect(
       String.to_integer(x),
@@ -18,5 +22,7 @@ defmodule AsciiWeb.Controllers.Rect do
     )
 
     send_resp(conn, 200, "OK")
+  rescue
+    _ -> send_resp(conn, 400, "Invalid Format")
   end
 end

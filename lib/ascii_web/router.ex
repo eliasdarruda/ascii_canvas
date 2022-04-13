@@ -17,6 +17,6 @@ defmodule AsciiWeb.Router do
 
   match _ do
     conn
-    |> send_resp(404, "Whoops")
+    |> send_resp(404, "Whoops!")
   end
 end

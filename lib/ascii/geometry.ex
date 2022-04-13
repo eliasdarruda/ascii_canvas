@@ -1,4 +1,8 @@
 defmodule Ascii.Geometry do
+  @moduledoc """
+  This is a helper module that handles geometry operations only concerning rectangles ATM
+  """
+
   alias Ascii.Canvas.Elements.Rect
 
   @type point :: %{x: integer(), y: integer()}
@@ -55,7 +59,7 @@ defmodule Ascii.Geometry do
   @doc """
   Verifies if a specific point is contained in a rectangle
   """
-  @spec point_in_rectangle?(point(), rect_edges()) :: boolean()
+  @spec point_in_rectangle?(point(), %Rect{}) :: boolean()
   def point_in_rectangle?(point, %Rect{} = rect) do
     rect_edges = build_rect_edges(rect)
 
