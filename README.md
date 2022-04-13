@@ -12,10 +12,19 @@ The server handles the canvas in memory lazily through Streams Operations, its o
 
 
 ## Running
+---
 
-`iex -S mix`
+### Locally
 
-- It will start a HTTP Server that defaults to port 4000
+`mix deps.get && iex -S mix`
+
+### With Docker
+
+`docker run --rm -p 4000:4000 -it $(docker build -q .)`
+
+Running will:
+
+- Start a HTTP Server that defaults to port 4000
 - You can add rectangles in the canvas using the web interface
 - Or you can add through `iex` running ```Ascii.Canvas.new_rect/6```
 - To change canvas size dinamically though server use: `Ascii.Canvas.reset(width, height)`
